@@ -9,6 +9,7 @@ import {
   AnonymousTip,
 } from "@/lib/types";
 import { FORM_COLORS } from "@/lib/constants";
+import { isPodoRecord } from "@/lib/utils";
 import ClickableTag from "./ClickableTag";
 
 interface EvidenceCardProps {
@@ -17,13 +18,23 @@ interface EvidenceCardProps {
 }
 
 export default function EvidenceCard({ item, onTagClick }: EvidenceCardProps) {
-  const baseClasses = `border rounded-lg p-4 shadow-sm ${FORM_COLORS[item.formType]}`;
+  const isPodo = isPodoRecord(item);
+  const baseClasses = `border rounded-lg p-4 shadow-sm ${FORM_COLORS[item.formType]} ${
+    isPodo ? "ring-2 ring-yellow-400 relative" : ""
+  }`;
+
+  const podoBadge = isPodo && (
+    <span className="absolute -top-2 -right-2 text-xs px-2 py-0.5 bg-yellow-400 text-yellow-900 rounded-full font-medium">
+      PODO
+    </span>
+  );
 
   switch (item.formType) {
     case "checkins": {
       const checkin = item as Checkin;
       return (
         <div className={baseClasses}>
+          {podoBadge}
           <div className="flex justify-between items-start mb-2">
             <ClickableTag name={checkin.fullname} onTagClick={onTagClick} />
             <span className="text-sm text-gray-500">{checkin.timestamp}</span>
@@ -38,6 +49,7 @@ export default function EvidenceCard({ item, onTagClick }: EvidenceCardProps) {
       const message = item as Message;
       return (
         <div className={baseClasses}>
+          {podoBadge}
           <div className="flex justify-between items-start mb-2">
             <span className="font-medium">
               <ClickableTag name={message.from} onTagClick={onTagClick} />
@@ -55,6 +67,7 @@ export default function EvidenceCard({ item, onTagClick }: EvidenceCardProps) {
       const sighting = item as Sighting;
       return (
         <div className={baseClasses}>
+          {podoBadge}
           <div className="flex justify-between items-start mb-2">
             <span className="font-medium">
               <ClickableTag name={sighting.personName} onTagClick={onTagClick} />
@@ -77,6 +90,7 @@ export default function EvidenceCard({ item, onTagClick }: EvidenceCardProps) {
       const note = item as PersonalNote;
       return (
         <div className={baseClasses}>
+          {podoBadge}
           <div className="flex justify-between items-start mb-2">
             <ClickableTag name={note.fullname} onTagClick={onTagClick} />
             <span className="text-sm text-gray-500">{note.timestamp}</span>
@@ -90,6 +104,7 @@ export default function EvidenceCard({ item, onTagClick }: EvidenceCardProps) {
       const tip = item as AnonymousTip;
       return (
         <div className={baseClasses}>
+          {podoBadge}
           <div className="flex justify-between items-start mb-2">
             <span className="font-medium">
               Şüpheli:{" "}

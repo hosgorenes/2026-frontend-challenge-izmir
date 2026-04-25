@@ -46,3 +46,23 @@ export const ALL_FORM_TYPES: FormType[] = [
   "personalNotes",
   "anonymousTips",
 ];
+
+export const MAP_COLORS = {
+  podo: {
+    fill: "#EAB308",
+    stroke: "#CA8A04",
+  },
+  default: {
+    fill: "#3B82F6",
+    stroke: "#2563EB",
+  },
+  path: "#EAB308",
+} as const;
+
+export const MAP_SETTINGS = {
+  defaultZoom: 13,
+  podoMarkerRadius: 12,
+  defaultMarkerRadius: 8,
+  pathWeight: 3,
+  pathDashArray: "5, 10",
+} as const;

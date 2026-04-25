@@ -87,3 +87,13 @@ export interface JotformResponse {
     count: number;
   };
 }
+
+export interface MapMarker {
+  id: string;
+  lat: number;
+  lng: number;
+  name: string;
+  location: string;
+  timestamp: string;
+  isPodo: boolean;
+}

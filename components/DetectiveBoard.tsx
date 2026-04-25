@@ -3,9 +3,14 @@
 import { useState, useMemo } from "react";
 import { FormType, Evidence } from "@/lib/types";
 import { ALL_FORM_TYPES } from "@/lib/constants";
+import { sortByTimestamp } from "@/lib/utils";
 import SearchBar from "./SearchBar";
 import FilterTabs from "./FilterTabs";
 import EvidenceCard from "./EvidenceCard";
+import Timeline from "./Timeline";
+import EvidenceMap from "./EvidenceMap";
+
+type ViewMode = "cards" | "timeline" | "map";
 
 function getSearchableText(item: Evidence): string {
   const values = Object.values(item).filter(
@@ -25,6 +30,7 @@ export default function DetectiveBoard({
   const [activeFilters, setActiveFilters] = useState<Set<FormType>>(
     new Set(ALL_FORM_TYPES)
   );
+  const [viewMode, setViewMode] = useState<ViewMode>("cards");
 
   const toggleFilter = (formType: FormType) => {
     setActiveFilters((prev) => {
@@ -43,7 +49,7 @@ export default function DetectiveBoard({
   };
 
   const filteredEvidence = useMemo(() => {
-    return initialEvidence.filter((item) => {
+    const filtered = initialEvidence.filter((item) => {
       if (!activeFilters.has(item.formType)) {
         return false;
       }
@@ -58,18 +64,25 @@ export default function DetectiveBoard({
 
       return true;
     });
-  }, [initialEvidence, activeFilters, searchQuery]);
 
-  return (
-    <div>
-      <SearchBar value={searchQuery} onChange={setSearchQuery} />
-      <FilterTabs activeFilters={activeFilters} onToggle={toggleFilter} />
+    if (viewMode === "timeline") {
+      return sortByTimestamp(filtered, true);
+    }
 
-      <div className="text-sm text-gray-600 mb-4">
-        {filteredEvidence.length} kanıt bulundu
-      </div>
+    return filtered;
+  }, [initialEvidence, activeFilters, searchQuery, viewMode]);
 
-      {filteredEvidence.length === 0 ? (
+  const renderContent = () => {
+    if (viewMode === "map") {
+      return <EvidenceMap items={filteredEvidence} onTagClick={handleTagClick} />;
+    }
+
+    if (viewMode === "timeline") {
+      return <Timeline items={filteredEvidence} onTagClick={handleTagClick} />;
+    }
+
+    if (filteredEvidence.length === 0) {
+      return (
         <div className="text-center py-16">
           <div className="text-6xl mb-4">🔍</div>
           <h3 className="text-xl font-semibold text-gray-700 mb-2">
@@ -79,13 +92,64 @@ export default function DetectiveBoard({
             Farklı bir arama terimi dene veya filtreleri değiştir.
           </p>
         </div>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredEvidence.map((item) => (
-            <EvidenceCard key={item.id} item={item} onTagClick={handleTagClick} />
-          ))}
+      );
+    }
+
+    return (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {filteredEvidence.map((item) => (
+          <EvidenceCard key={item.id} item={item} onTagClick={handleTagClick} />
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <SearchBar value={searchQuery} onChange={setSearchQuery} />
+
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <FilterTabs activeFilters={activeFilters} onToggle={toggleFilter} />
+
+        <div className="flex gap-2">
+          <button
+            onClick={() => setViewMode("cards")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              viewMode === "cards"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            Kartlar
+          </button>
+          <button
+            onClick={() => setViewMode("timeline")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              viewMode === "timeline"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            Timeline
+          </button>
+          <button
+            onClick={() => setViewMode("map")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              viewMode === "map"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            Harita
+          </button>
         </div>
-      )}
+      </div>
+
+      <div className="text-sm text-gray-600 mb-4">
+        {filteredEvidence.length} kanıt bulundu
+      </div>
+
+      {renderContent()}
     </div>
   );
 }
