@@ -10,7 +10,7 @@ interface FilterTabsProps {
 
 export default function FilterTabs({ activeFilters, onToggle }: FilterTabsProps) {
   return (
-    <div className="flex flex-wrap gap-2 mb-6">
+    <div className="flex flex-wrap gap-2">
       {(Object.keys(FORM_LABELS) as FormType[]).map((formType) => {
         const isActive = activeFilters.has(formType);
         const colors = FILTER_COLORS[formType];
@@ -18,7 +18,7 @@ export default function FilterTabs({ activeFilters, onToggle }: FilterTabsProps)
           <button
             key={formType}
             onClick={() => onToggle(formType)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
               isActive ? colors.active : colors.inactive
             }`}
           >

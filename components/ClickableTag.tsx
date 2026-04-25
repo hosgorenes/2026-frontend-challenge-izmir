@@ -9,7 +9,7 @@ export default function ClickableTag({ name, onTagClick }: ClickableTagProps) {
   return (
     <button
       onClick={() => onTagClick(name)}
-      className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+      className="font-medium text-yellow-500 hover:text-yellow-400 hover:underline transition-colors"
     >
       {name}
     </button>

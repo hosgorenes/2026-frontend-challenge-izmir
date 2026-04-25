@@ -9,33 +9,33 @@ export const FORM_LABELS: Record<FormType, string> = {
 };
 
 export const FORM_COLORS: Record<FormType, string> = {
-  checkins: "bg-white border-gray-200",
-  messages: "bg-blue-50 border-blue-200",
-  sightings: "bg-green-50 border-green-200",
-  personalNotes: "bg-yellow-50 border-yellow-200",
-  anonymousTips: "bg-red-50 border-red-200",
+  checkins: "bg-zinc-800/50 border-zinc-700",
+  messages: "bg-blue-950/50 border-blue-800",
+  sightings: "bg-emerald-950/50 border-emerald-800",
+  personalNotes: "bg-amber-950/50 border-amber-800",
+  anonymousTips: "bg-red-950/50 border-red-800",
 };
 
 export const FILTER_COLORS: Record<FormType, { active: string; inactive: string }> = {
   checkins: {
-    active: "bg-gray-800 text-white",
-    inactive: "bg-gray-100 text-gray-700 hover:bg-gray-200",
+    active: "bg-zinc-100 text-zinc-900",
+    inactive: "bg-zinc-800 text-zinc-300 hover:bg-zinc-700",
   },
   messages: {
-    active: "bg-blue-600 text-white",
-    inactive: "bg-blue-100 text-blue-700 hover:bg-blue-200",
+    active: "bg-blue-500 text-white",
+    inactive: "bg-blue-950 text-blue-300 hover:bg-blue-900",
   },
   sightings: {
-    active: "bg-green-600 text-white",
-    inactive: "bg-green-100 text-green-700 hover:bg-green-200",
+    active: "bg-emerald-500 text-white",
+    inactive: "bg-emerald-950 text-emerald-300 hover:bg-emerald-900",
   },
   personalNotes: {
-    active: "bg-yellow-500 text-white",
-    inactive: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200",
+    active: "bg-amber-500 text-white",
+    inactive: "bg-amber-950 text-amber-300 hover:bg-amber-900",
   },
   anonymousTips: {
-    active: "bg-red-600 text-white",
-    inactive: "bg-red-100 text-red-700 hover:bg-red-200",
+    active: "bg-red-500 text-white",
+    inactive: "bg-red-950 text-red-300 hover:bg-red-900",
   },
 };
 

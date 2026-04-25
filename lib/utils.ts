@@ -42,15 +42,59 @@ export function formatDate(timestamp: string): string {
   });
 }
 
+export type PodoLevel = "direct" | "mentioned" | "none";
+
+export function getPodoLevel(item: Evidence): PodoLevel {
+  const isPodo = (value: string | undefined): boolean =>
+    (value ?? "").toLowerCase() === "podo";
+
+  const containsPodo = (value: string | undefined): boolean =>
+    (value ?? "").toLowerCase().includes("podo");
+
+  if ("fullname" in item && isPodo(item.fullname)) return "direct";
+  if ("personName" in item && isPodo(item.personName)) return "direct";
+  if ("from" in item && isPodo(item.from)) return "direct";
+  if ("to" in item && isPodo(item.to)) return "direct";
+
+  if ("seenWith" in item && containsPodo(item.seenWith)) return "mentioned";
+  if ("suspectName" in item && containsPodo(item.suspectName)) return "mentioned";
+  if ("message" in item && containsPodo(item.message)) return "mentioned";
+  if ("note" in item && containsPodo(item.note)) return "mentioned";
+  if ("tip" in item && containsPodo(item.tip)) return "mentioned";
+
+  return "none";
+}
+
 export function isPodoRecord(item: Evidence): boolean {
-  if ("fullname" in item && item.fullname.toLowerCase() === "podo") {
-    return true;
-  }
-  if ("personName" in item && item.personName.toLowerCase() === "podo") {
-    return true;
-  }
-  if ("from" in item && item.from.toLowerCase() === "podo") {
-    return true;
-  }
-  return false;
+  return getPodoLevel(item) !== "none";
+}
+
+export function isPodoDirect(item: Evidence): boolean {
+  return getPodoLevel(item) === "direct";
+}
+
+export function isValidEvidence(item: Evidence): boolean {
+  if (!item.timestamp || !item.formType) return false;
+
+  const date = parseTimestamp(item.timestamp);
+  if (!date || isNaN(date.getTime())) return false;
+
+  const getName = (): string => {
+    if ("fullname" in item) return item.fullname || "";
+    if ("personName" in item) return item.personName || "";
+    if ("from" in item) return item.from || "";
+    if ("suspectName" in item) return item.suspectName || "";
+    return "";
+  };
+  if (getName().length < 2) return false;
+
+  const getContent = (): string => {
+    if ("message" in item) return item.message || "";
+    if ("note" in item) return item.note || "";
+    if ("tip" in item) return item.tip || "";
+    return "";
+  };
+  if (getContent().length < 3) return false;
+
+  return true;
 }

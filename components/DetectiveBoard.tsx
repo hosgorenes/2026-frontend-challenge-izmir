@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { FormType, Evidence } from "@/lib/types";
 import { ALL_FORM_TYPES } from "@/lib/constants";
-import { sortByTimestamp } from "@/lib/utils";
+import { sortByTimestamp, isValidEvidence } from "@/lib/utils";
 import SearchBar from "./SearchBar";
 import FilterTabs from "./FilterTabs";
 import EvidenceCard from "./EvidenceCard";
@@ -32,6 +32,12 @@ export default function DetectiveBoard({
   );
   const [viewMode, setViewMode] = useState<ViewMode>("cards");
 
+  // Veri temizleme - geçersiz kayıtları filtrele
+  const cleanEvidence = useMemo(
+    () => initialEvidence.filter(isValidEvidence),
+    [initialEvidence]
+  );
+
   const toggleFilter = (formType: FormType) => {
     setActiveFilters((prev) => {
       const next = new Set(prev);
@@ -49,7 +55,7 @@ export default function DetectiveBoard({
   };
 
   const filteredEvidence = useMemo(() => {
-    const filtered = initialEvidence.filter((item) => {
+    const filtered = cleanEvidence.filter((item) => {
       if (!activeFilters.has(item.formType)) {
         return false;
       }
@@ -70,7 +76,7 @@ export default function DetectiveBoard({
     }
 
     return filtered;
-  }, [initialEvidence, activeFilters, searchQuery, viewMode]);
+  }, [cleanEvidence, activeFilters, searchQuery, viewMode]);
 
   const renderContent = () => {
     if (viewMode === "map") {
@@ -85,10 +91,10 @@ export default function DetectiveBoard({
       return (
         <div className="text-center py-16">
           <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <h3 className="text-xl font-semibold text-zinc-300 mb-2">
             İpucu bulunamadı
           </h3>
-          <p className="text-gray-500">
+          <p className="text-zinc-500">
             Farklı bir arama terimi dene veya filtreleri değiştir.
           </p>
         </div>
@@ -96,7 +102,7 @@ export default function DetectiveBoard({
     }
 
     return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredEvidence.map((item) => (
           <EvidenceCard key={item.id} item={item} onTagClick={handleTagClick} />
         ))}
@@ -111,33 +117,33 @@ export default function DetectiveBoard({
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <FilterTabs activeFilters={activeFilters} onToggle={toggleFilter} />
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 bg-zinc-900 p-1 rounded-xl">
           <button
             onClick={() => setViewMode("cards")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               viewMode === "cards"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-yellow-500 text-black"
+                : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
             Kartlar
           </button>
           <button
             onClick={() => setViewMode("timeline")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               viewMode === "timeline"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-yellow-500 text-black"
+                : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
             Timeline
           </button>
           <button
             onClick={() => setViewMode("map")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               viewMode === "map"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-yellow-500 text-black"
+                : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
             Harita
@@ -145,7 +151,7 @@ export default function DetectiveBoard({
         </div>
       </div>
 
-      <div className="text-sm text-gray-600 mb-4">
+      <div className="text-sm text-zinc-500 mb-4">
         {filteredEvidence.length} kanıt bulundu
       </div>
 
